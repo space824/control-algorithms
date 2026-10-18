@@ -1,11 +1,14 @@
-"""Day 2:增量式 PID —— 对比位置式与增量式的两个关键区别。
+"""Day 2:增量式 PID —— 对比位置式与增量式的关键区别。
 
-本脚本用相同的增益、不同的 PID 结构，对比两个现象：
-    1. 突变响应（微分冲击 / derivative kick）：
-       设定值阶跃时，位置式的微分项会产生一个瞬时尖峰，增量式则平滑过渡。
+本脚本用相同的增益、不同的 PID 结构，对比两件事：
+    1. 设定值阶跃时的微分冲击（derivative kick）：
+       增益配平后两种结构完全等价，(b) 里两条曲线在 t=0 跳出同一个尖峰
+       （本例 33.02）。微分冲击来自"对误差求导"，不是增量式能消除的，
+       真正的解法是微分先行（让 D 作用在测量值上）。这一组图的价值在于
+       看清尖峰打哪来，以及两种形式其实是同一回事。
     2. 积分饱和（integral windup）：
        输出被限幅时，位置式（若无抗饱和）会无限累积积分，松开后造成超调；
-       增量式没有积分累加器，天然无此问题。
+       增量式没有积分累加器，天然无此问题。—— 这才是两者真正的区别。
 
 运行：在项目根目录执行
     python examples/day2_incremental_pid.py
@@ -31,7 +34,7 @@ class SecondOrderPlant:
     """二阶系统 x'' + 2*zeta*wn*x' + wn^2*x = b*u，前向欧拉离散。
 
     欠阻尼的二阶系统会振荡，微分项的价值在这种系统上才明显，
-    也是演示"微分冲击"的好对象。
+    设定值阶跃时也最容易看清"微分冲击"那根尖峰。
     """
 
     def __init__(self, zeta=0.3, wn=2.0, b=4.0, dt=0.01, x0=0.0, v0=0.0):
@@ -126,11 +129,11 @@ def simulate(pid, plant, setpoint_seq, duration):
 
 def main():
     dt = 0.01
-    gains = dict(kp=3.0, ki=2.0, kd=0.3)  # 两组对比用同一组增益
+    gains = dict(kp=3.0, ki=2.0, kd=0.3)  # 两组共用同一组增益：配平后两者应当完全等价
 
     fig, axes = plt.subplots(2, 2, figsize=(11, 8))
 
-    # ---------- 面板 1：突变响应（微分冲击） ----------
+    # ---------- 面板 1：设定值阶跃的微分冲击 ----------
     # 二阶欠阻尼系统，设定值在 t=0 从 0 阶跃到 1
     pos = PositionPID(dt=dt, **gains)
     plant_pos = SecondOrderPlant(dt=dt)
@@ -152,7 +155,7 @@ def main():
     ax = axes[0, 1]
     ax.plot(t1, u_pos, label="positional")
     ax.plot(t1, u_inc, label="incremental")
-    ax.set_title("(b) Control u: positional PID has derivative kick")
+    ax.set_title("(b) Control u: derivative kick at the setpoint step")
     ax.set_ylabel("control u")
     ax.legend()
     ax.grid(True, alpha=0.3)

@@ -1,4 +1,4 @@
-"""Day 1：位置式 PID 控制一阶惯性环节，阶跃响应仿真。
+"""Day 1:位置式 PID 控制一阶惯性环节，阶跃响应仿真。
 
 被控对象：一阶惯性环节
     dx/dt = -a*x + b*u
@@ -9,11 +9,11 @@
     1. P only —— 有稳态误差（一阶系统纯比例无法消除稳态误差）
     2. P + I   —— 积分消除稳态误差
     3. PID     —— 完整形式（注意：对一阶系统 D 收益很小，
-                D 的价值要在二阶/有振荡的系统上才明显，Day 3+ 会看到）
+                D 的价值要在二阶/有振荡的系统上才明显,Day 3+ 会看到）
 
 运行：在项目根目录执行
     python examples/day1_position_pid.py
-生成图片：docs/images/day1_position_pid.png
+生成图片:docs/images/day1_position_pid.png
 """
 
 import sys
@@ -33,7 +33,7 @@ from src.pid.position_pid import PositionPID
 class FirstOrderPlant:
     """一阶惯性环节 dx/dt = -a*x + b*u，前向欧拉离散。"""
 
-    def __init__(self, a=1.0, b=1.0, dt=0.01, x0=0.0):
+    def __init__(self, a=1.0, b=0.3, dt=0.01, x0=0.0):
         self.a = a
         self.b = b
         self.dt = dt
@@ -62,13 +62,13 @@ def simulate(pid, plant, setpoint=1.0, duration=5.0):
 
 
 def main():
-    dt = 0.01
-    duration = 5.0
+    dt = 0.001
+    duration = 10.0
 
     # 三组整定参数，用来对比 P/I/D 各自的作用
     configs = [
-        ("P only", dict(kp=3.0, ki=0.0, kd=0.0)),
-        ("PI",     dict(kp=3.0, ki=2.0, kd=0.0)),
+        ("P only", dict(kp=3.0, ki=2.0, kd=0.0)),
+        ("PI",     dict(kp=3.0, ki=8.0, kd=0.0)),
         ("PID",    dict(kp=4.0, ki=2.0, kd=0.3)),
     ]
 
