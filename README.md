@@ -2,14 +2,14 @@
 
 一个用纯 Python 实现的控制算法库与仿真合集——PID、滤波器、状态估计（KF/EKF）、最优控制（LQR/MPC）。
 
-> 🚧 正在建设中，按四周计划逐步添加算法。当前进度：Day 3 一阶低通滤波。
+> 🚧 正在建设中，按四周计划逐步添加算法。当前进度：Day 4 二阶低通滤波。
 
 ## 算法列表
 
 - [x] 位置式 PID（含抗积分饱和）
-- [x] 增量式 PID（天然抗积分饱和、无微分冲击）
+- [x] 增量式 PID（天然抗积分饱和；与位置式差分等价，不平滑掉微分冲击）
 - [x] 一阶低通滤波（指数移动平均，调 α 控制截止频率）
-- [ ] 二阶低通滤波
+- [x] 二阶低通滤波（巴特沃斯 biquad，−40 dB/十倍频，Q 可调）
 - [ ] 互补滤波
 - [ ] 卡尔曼滤波 KF / 扩展卡尔曼滤波 EKF
 - [ ] LQR 求解器 + 仿真
@@ -22,12 +22,20 @@ pip install -r requirements.txt
 python examples/day1_position_pid.py   # 生成 docs/images/day1_position_pid.png
 python examples/day2_incremental_pid.py  # 生成 docs/images/day2_incremental_pid.png
 python examples/day3_lowpass_filter.py   # 生成 docs/images/day3_lowpass_filter.png
+python examples/day4_second_order_lowpass.py  # 生成 docs/images/day4_second_order_lowpass.png
 ```
+
+## Day 4 的一条结论
+
+一阶和二阶在**白噪声**下的表现几乎打平（噪声放大 0.334 vs 0.281，只差 1.5 dB）——因为等效噪声带宽只与延迟成反比，与阶数无关。
+二阶真正的价值在**窄带干扰**：本课 120 Hz 处一阶 −10.7 dB、二阶 −21.9 dB，差 11.2 dB。详见 `每日学习内容调试/2026-10-18 二阶低通滤波.md`。
 
 ## 目录结构
 
 ```
-src/        # 算法实现（按模块分类）
-examples/   # 每个算法一个可运行示例脚本，跑一次出一张图
-docs/images/ # 仿真结果图
+src/          # 算法实现（按模块分类）
+examples/     # 每个算法一个可运行示例脚本，跑一次出一张图
+docs/images/  # 仿真结果图
+matlab实现/    # 同一批算法的 MATLAB 实现 + 逐段解析
+每日学习内容调试/ # 每天的原理讲解、图形解读与调试记录
 ```
