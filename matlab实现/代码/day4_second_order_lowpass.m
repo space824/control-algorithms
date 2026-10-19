@@ -120,6 +120,7 @@ semilogx(f1, 20*log10(abs(H1f)), 'Color', [0.90 0.50 0.05], 'LineWidth', 1.8, ..
          'DisplayName', '1st order: -20 dB/dec');
 semilogx(f2, 20*log10(abs(H2f)), 'Color', [0.00 0.45 0.74], 'LineWidth', 1.8, ...
          'DisplayName', '2nd order: -40 dB/dec');
+set(gca, 'XScale', 'log');    % hold on 之后显式切对数轴
 yline(-3, '--', 'HandleVisibility', 'off');
 xline(fc, ':', 'HandleVisibility', 'off');
 xline(f_int, ':', 'Color', [0.85 0.33 0.10], 'HandleVisibility', 'off');

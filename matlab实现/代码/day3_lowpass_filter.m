@@ -56,6 +56,7 @@ for a = alphas
     [H, f] = freqz(a, [1 -(1-a)], 1024, Fs);
     semilogx(f, 20*log10(abs(H)), 'DisplayName', sprintf('\\alpha=%.2f', a));
 end
+set(gca, 'XScale', 'log');   % hold on 之后必须显式切对数轴
 yline(-3, '--', 'DisplayName', '-3 dB');
 title('(c) Magnitude response |H(f)|');
 xlabel('frequency [Hz]'); ylabel('magnitude [dB]');
